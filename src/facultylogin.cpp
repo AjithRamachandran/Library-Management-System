@@ -19,7 +19,7 @@ static int callback(void *data, int argc, char **argv, char **azColName){
 
 void facultylogin::connectDatabase() {
     int exit = 0; 
-    exit = sqlite3_open("faculty.sqlite", &db);
+    exit = sqlite3_open("data/faculty.sqlite", &db);
     if(exit) {
         std::cout<<"couldnt connect!";
     }

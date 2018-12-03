@@ -12,7 +12,7 @@ usersignup::~usersignup() {
 
 void usersignup::connectdatabase(){
     int exit = 0; 
-    exit = sqlite3_open("example.db", &db);
+    exit = sqlite3_open("data/users.db", &db);
     if(exit) {
         std::cout<<"couldnt connect!";
     }

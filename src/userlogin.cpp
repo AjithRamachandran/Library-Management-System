@@ -13,10 +13,11 @@ static int callback(void *data, int argc, char **argv, char **azColName){
     }
 
 void userlogin::connectDatabase() {
-    int exit = 0; 
-    exit = sqlite3_open("users.sqlite", &db);
-    if(exit) {
-        std::cout<<"couldnt connect!";
+    int exit_ = 0; 
+    exit_ = sqlite3_open("data/users.sqlite", &db);
+    if(exit_) {
+        std::cout<<"couldnt connect! Contact Admins!"<<std::endl;
+        exit(EXIT_FAILURE);
     }
 }
 
