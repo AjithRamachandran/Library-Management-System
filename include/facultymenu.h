@@ -5,12 +5,13 @@
 
 class facultymenu {
     public:
-        sqlite3 *db;
+        sqlite3 *data_db;
+        sqlite3 *user_db;
         facultymenu();
         ~facultymenu();
-        void connectDatabase();
+        void connectDatabase(std::string, sqlite3 *);
         void mainmenu();
-        void manageusers();
+        void removeusers();
         void addbook();
         void deletebook();
 };
