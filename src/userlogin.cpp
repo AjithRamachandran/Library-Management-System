@@ -39,6 +39,7 @@ void userlogin::login(){
         sqlite3_free(zErrMsg);
     }
     if(password==userlogin::password){
+        usermenu::username = username;
         system("clear");
         usermenu menu;
         menu.mainmenu();

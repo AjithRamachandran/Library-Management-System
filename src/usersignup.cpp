@@ -13,17 +13,17 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 
 void usersignup::connectdatabase(){
     int exit = 0; 
-    exit = sqlite3_open("data/users.db", &db);
+    exit = sqlite3_open("data/users.sqlite", &db);
     if(exit) {
         std::cout<<"couldnt connect!";
     }
 }
 
 void usersignup::createuser() {
-    std::string username, password;
+    std::string userName, password;
     tryagain:
     std::cout<<"Enter the Username: ";
-    std::cin>>username;
+    std::cin>>userName;
     std::cout<<"Enter the Password: ";
     std::cin>>password;
 
@@ -31,7 +31,7 @@ void usersignup::createuser() {
     const char* data = "";
     int rc;
 
-    std::string check = "select " + username + "from Books;";
+    std::string check = "select * from users where Title= '" + userName + "';";
     char *checkError = 0;
     int check_ = sqlite3_exec(db, check.c_str(), callback, 0, &checkError);
 
@@ -40,12 +40,11 @@ void usersignup::createuser() {
         goto tryagain;
     }
 
-    std::string sql = "INSERT INTO Books (Tusername, password)" \
-        " VALUES ('" + username + "','" + password + "');";
+    std::string sql = "INSERT INTO users (username, password)" \
+        " VALUES ('" + userName + "','" + password + "');";
     rc = sqlite3_exec(db, sql.c_str(), callback, 0, &zErrMsg);
     std::cout<<sql;
     if( rc != SQLITE_OK ){
-        std::cout<<"inside if";
         std::cout<<"SQL error:"<<zErrMsg;
         sqlite3_free(zErrMsg);
     }

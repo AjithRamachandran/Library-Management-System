@@ -14,15 +14,20 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
 }
 
 void facultymenu::connectDatabase(std::string path, sqlite3 *db) {
-    int exit = 0; 
-    exit = sqlite3_open(path.c_str(), &db);
-    if(exit) {
+    int exit_ = 0; 
+    exit_ = sqlite3_open(path.c_str(), &db);
+    if(exit_) {
         std::cout<<"couldnt connect!";
+        exit(EXIT_FAILURE);
+    }
+    else {
+        std::cout<<"Opened Database successfully";
     }
 }
 
 void facultymenu::addbook() {
     std::string bookName, authorName, category;
+    const char* data = "";
     tryagain:
     std::cout<<"Enter the name of the book to be added: "<<std::endl;
     std::cin>>bookName;
@@ -31,9 +36,9 @@ void facultymenu::addbook() {
     std::cout<<"Enter the name of category of the book: "<<std::endl;
     std::cin>>category;
 
-    std::string check = "select " + bookName + "from Books;";
+    std::string check = "select * from Books where Title= '" + bookName + "';";
     char *checkError = 0;
-    int check_ = sqlite3_exec(data_db, check.c_str(), callback, 0, &checkError);
+    int check_ = sqlite3_exec(data_db, check.c_str(), callback, (void*)data, &checkError);
 
     if(check_ == SQLITE_OK) {
         std::cout<<"Book already exists!"<<std::endl;
@@ -43,10 +48,9 @@ void facultymenu::addbook() {
     std::string sql = "INSERT INTO Books (Title, Author, Category)" \
         " VALUES ('" + bookName + "','" + authorName + "','" + category + "');";
     char *zErrMsg = 0;
-    int rc = sqlite3_exec(data_db, sql.c_str(), callback, 0, &zErrMsg);
-    std::cout<<sql;
-    if( rc != SQLITE_OK ){
-        std::cout<<"SQL error:"<<zErrMsg;
+    int rc = sqlite3_exec(data_db, sql.c_str(), callback, (void*)data, &zErrMsg);
+    if( rc != SQLITE_DONE ){
+        std::cout<<"SQL error:"<<zErrMsg<<std::endl;
         sqlite3_free(zErrMsg);
     }
     else {

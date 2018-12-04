@@ -9,9 +9,6 @@
 std::string facultylogin::password;
 
 static int callback(void *data, int argc, char **argv, char **azColName){
-        std::cout<<data;
-        std::cout<<azColName;
-        std::cout<<argc;
         facultylogin::password = argv[0] ? argv[0] : "NULL";
         return 0;
     }
