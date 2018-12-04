@@ -1,13 +1,14 @@
 #include <iostream>
 
+#include <userlogin.h>
 #include <usersignup.h>
 
+bool username_exists;
+
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
-    int i;
-    for(i = 0; i<argc; i++) {
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    if(argc>0) {
+        username_exists = true;
     }
-    printf("\n");
     return 0;
 }
 
@@ -31,25 +32,27 @@ void usersignup::createuser() {
     const char* data = "";
     int rc;
 
-    std::string check = "select * from users where Title= '" + userName + "';";
+    std::string check = "select * from users where username= '" + userName + "';";
     char *checkError = 0;
     int check_ = sqlite3_exec(db, check.c_str(), callback, 0, &checkError);
 
-    if(check_ == SQLITE_OK) {
-        std::cout<<"UserName already exists!"<<std::endl;
+    if(username_exists) {
+        std::cout<<"Username already exists!"<<std::endl;
         goto tryagain;
     }
 
     std::string sql = "INSERT INTO users (username, password)" \
         " VALUES ('" + userName + "','" + password + "');";
     rc = sqlite3_exec(db, sql.c_str(), callback, 0, &zErrMsg);
-    std::cout<<sql;
     if( rc != SQLITE_OK ){
         std::cout<<"SQL error:"<<zErrMsg;
         sqlite3_free(zErrMsg);
     }
     else {
-        std::cout<<"Records created successfully\n";
+        system("clear");
+        std::cout<<"Records created successfully\nNow you can login!"<<std::endl;
+        userlogin user;
+        user.login();
     }
 }
 

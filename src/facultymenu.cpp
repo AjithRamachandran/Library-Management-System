@@ -4,11 +4,11 @@
 
 #include <facultymenu.h>
 
-bool exists;
+bool book_exists;
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
     if(argc>0) {
-        exists = true;
+        book_exists = true;
     }
     return 0;
 }
@@ -38,7 +38,7 @@ void facultymenu::addbook() {
     char *checkError = 0;
     int check_ = sqlite3_exec(data_db, check.c_str(), callback, NULL, &checkError);
     std::cout<<check;
-    if(exists) {
+    if(book_exists) {
         std::cout<<"Book already exists!"<<std::endl;
         goto tryagain;
     }
