@@ -4,30 +4,28 @@
 
 #include <facultymenu.h>
 
+bool exists;
+
 static int callback(void *NotUsed, int argc, char **argv, char **azColName) {
-    int i;
-    for(i = 0; i<argc; i++) {
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+    if(argc>0) {
+        exists = true;
     }
-    printf("\n");
     return 0;
 }
 
-void facultymenu::connectDatabase(std::string path, sqlite3 *db) {
-    int exit_ = 0; 
-    exit_ = sqlite3_open(path.c_str(), &db);
-    if(exit_) {
+void facultymenu::connectDatabase() {
+    int exit_1 = 0;
+    int exit_2 = 0;
+    exit_1 = sqlite3_open("data/data.sqlite", &data_db);
+    exit_2 = sqlite3_open("data/users.sqlite", &user_db);
+    if(exit_1 || exit_2) {
         std::cout<<"couldnt connect!";
         exit(EXIT_FAILURE);
-    }
-    else {
-        std::cout<<"Opened Database successfully";
     }
 }
 
 void facultymenu::addbook() {
     std::string bookName, authorName, category;
-    const char* data = "";
     tryagain:
     std::cout<<"Enter the name of the book to be added: "<<std::endl;
     std::cin>>bookName;
@@ -38,9 +36,9 @@ void facultymenu::addbook() {
 
     std::string check = "select * from Books where Title= '" + bookName + "';";
     char *checkError = 0;
-    int check_ = sqlite3_exec(data_db, check.c_str(), callback, (void*)data, &checkError);
-
-    if(check_ == SQLITE_OK) {
+    int check_ = sqlite3_exec(data_db, check.c_str(), callback, NULL, &checkError);
+    std::cout<<check;
+    if(exists) {
         std::cout<<"Book already exists!"<<std::endl;
         goto tryagain;
     }
@@ -48,13 +46,15 @@ void facultymenu::addbook() {
     std::string sql = "INSERT INTO Books (Title, Author, Category)" \
         " VALUES ('" + bookName + "','" + authorName + "','" + category + "');";
     char *zErrMsg = 0;
-    int rc = sqlite3_exec(data_db, sql.c_str(), callback, (void*)data, &zErrMsg);
-    if( rc != SQLITE_DONE ){
-        std::cout<<"SQL error:"<<zErrMsg<<std::endl;
+    int rc = sqlite3_exec(data_db, sql.c_str(), callback, NULL, &zErrMsg);
+    if(rc != SQLITE_OK) {
+        fprintf(stderr, "%s", zErrMsg);
         sqlite3_free(zErrMsg);
+        goto tryagain;
     }
     else {
         std::cout<<"Records created successfully\n";
+        facultymenu::mainmenu();
     }
 }
 
@@ -123,8 +123,7 @@ void facultymenu::mainmenu() {
 }
 
 facultymenu::facultymenu() {
-    facultymenu::connectDatabase("data/data.sqlite", data_db);
-    facultymenu::connectDatabase("data/users.sqlite", user_db);
+    facultymenu::connectDatabase();
 }
 
 facultymenu::~facultymenu() {

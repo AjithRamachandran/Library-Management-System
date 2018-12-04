@@ -1,6 +1,8 @@
 #ifndef USERMENU_H
 #define USERMENU_H
 
+#include <sqlite3.h>
+
 class usermenu {
     public:
         sqlite3 *db;

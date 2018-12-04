@@ -9,7 +9,7 @@ class facultymenu {
         sqlite3 *user_db;
         facultymenu();
         ~facultymenu();
-        void connectDatabase(std::string, sqlite3 *);
+        void connectDatabase();
         void mainmenu();
         void removeusers();
         void addbook();

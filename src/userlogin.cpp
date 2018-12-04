@@ -34,7 +34,7 @@ void userlogin::login(){
     std::string sql = "SELECT password from users WHERE username='" + username + "'";
     int rc = sqlite3_exec(db, sql.c_str(), callback, (void*)data, &zErrMsg);
     if( rc != SQLITE_OK ) {
-        std::cout<<"SQL error:"<<zErrMsg<<std::endl;
+        fprintf(stderr, "sql error%s", zErrMsg);
         goto tryAgain;
         sqlite3_free(zErrMsg);
     }
